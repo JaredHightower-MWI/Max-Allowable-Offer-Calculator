@@ -1,4 +1,8 @@
 "use client"; // this is a client component 👈🏽
+import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import { BsPlusSlashMinus } from "react-icons/bs";
+
+import { Label, TextInput, Dropdown } from "flowbite-react";
 import React, { useCallback, useState } from "react";
 
 export const Calculator = () => {
@@ -67,13 +71,49 @@ export const Calculator = () => {
     subjectPropertySqft,
   ]);
 
+  const handleAdjustmentDisplay = adjustments != 0 && (
+    <td>
+      ARV with adjustments {adjustmentsSymbol}
+      {abbreviatedAdjustmentsNumber}K: ${adjustedARV}
+    </td>
+  );
+
+  // const InputBox = ({ placeHolder, setState }) => {
+  //   return (
+  //     <div>
+  //       <div className="mb-2 block">
+  //         <Label htmlFor="base" value="Base input" />
+  //       </div>
+  //       <TextInput
+  //         id="base"
+  //         type="number"
+  //         sizing="md"
+  //         onChange={(e) => setState(e.target.valueAsNumber)}
+  //       />
+  //     </div>
+  //   );
+  // };
+
+  const PlusOrMinusButton = () => (
+    <div className="mx-2">
+      <Dropdown label={<BsPlusSlashMinus />}>
+        <Dropdown.Item icon={AiOutlineMinus} value="-">
+          Adjustments
+        </Dropdown.Item>
+        <Dropdown.Item icon={AiOutlinePlus} value="+">
+          Adjustments
+        </Dropdown.Item>
+      </Dropdown>
+    </div>
+  );
+
   return (
     <div>
       <label>
-        Subject Property Sqft:
+        Subject Property Sqft
         <input
           type="number"
-          value={subjectPropertySqft}
+          placeholder="1,250"
           onChange={(e) => setSubjectPropertySqft(e.target.valueAsNumber)}
         />
       </label>
@@ -87,8 +127,7 @@ export const Calculator = () => {
         />
       </label>
       <br />
-      <label>
-        Adjustments Symbol:
+      {/* <label>
         <select
           value={adjustmentsSymbol}
           onChange={(e) => setAdjustmentsSymbol(e.target.value)}
@@ -96,10 +135,11 @@ export const Calculator = () => {
           <option value="+">+</option>
           <option value="-">-</option>
         </select>
-      </label>
+      </label> */}
       <br />
-      <label>
+      <label className="flex row">
         Adjustments:
+        <PlusOrMinusButton />
         <input
           type="number"
           value={adjustments}
@@ -126,20 +166,28 @@ export const Calculator = () => {
       </label>
       <br />
       <button onClick={calculateOffer}>Calculate Offer</button>
-      <div>
-        <p>General ARV: ${originalArv}</p>
-        {adjustments != 0 && (
-          <p>
-            ARV with adjustments {adjustmentsSymbol}
-            {abbreviatedAdjustmentsNumber}K: ${adjustedARV}
-          </p>
-        )}
-        <p>
-          {Math.floor(arvBuyPercentage * 100)}% of ARV: ${floorPrice}
-        </p>
-        <p>Assignment Fee: ${desiredAssignmentFee}</p>
-        <p>Offer: ${offer}</p>
-      </div>
+
+      <table className="table-fixed">
+        <tbody>
+          <tr>
+            <td>General ARV: ${originalArv}</td>
+          </tr>
+          <tr>{handleAdjustmentDisplay}</tr>
+          <tr>
+            <td>
+              {Math.floor(arvBuyPercentage * 100)}% of ARV: ${floorPrice}
+            </td>
+          </tr>
+          <tr>
+            <td>Assignment Fee: ${desiredAssignmentFee}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong className="text-orange-600">Offer:</strong> ${offer}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
